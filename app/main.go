@@ -10,6 +10,11 @@ import (
 func main() {
 	command := os.Args[3]
 	args := os.Args[4:len(os.Args)]
+
+	args := os.Args[4:len(os.Args)]
+
+	fmt.Printf("argument 3: %s\n", command)
+	fmt.Printf("remained arguments : %s\n", args)
 	
 	cmd := exec.Command(command, args...)
 
@@ -23,5 +28,5 @@ func main() {
 		os.Exit(1)
 	}
 	
-	fmt.Println(string(output))
+	// fmt.Println(string(output))
 }

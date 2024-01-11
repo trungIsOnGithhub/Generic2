@@ -85,6 +85,12 @@ func run_container(command string, args []string, sandbox_path string) {
 		os.Exit(1)
 	}
 
+	// process isolation
+	cmd.SysProcAttr = &syscall.SysProcAttr {
+		// flag for clone call(Linux only)
+		Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID,
+	}
+
 	err = cmd.Run()
 	if err != nil {
 		fmt.Printf("Error Running Container!\n")

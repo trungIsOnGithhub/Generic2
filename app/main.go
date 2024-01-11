@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,6 +10,10 @@ import (
 )
 
 type nullReader struct {}
+
+func (nullReader) Read(p []byte) (int, error) {
+	return len(p), nil
+}
 
 func runContainer(command string, args []string, sandbox_path string) {
 	cmd := exec.Command(command, args...)
@@ -39,7 +42,6 @@ func runContainer(command string, args []string, sandbox_path string) {
 
 	if err != nil {
 		fmt.Printf("Error Running Container")
-
 		os.Exit(cmd.ProcessState.ExitCode())
 	}
 }
@@ -54,17 +56,12 @@ func main() {
 	// fmt.Printf("argument 3: %s\n", command)
 	// fmt.Printf("remained arguments : %s\n", args)
 	
-	cmd := exec.Command(command, args...)
-
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	err := cmd.Run()
+	jail_dir, err := os.MkdirTemp("/tmp", "my-docker")
 
 	if err != nil {
-		// fmt.Printf("Err: %v", err)
-		os.Exit(cmd.ProcessState.ExitCode())
+		fmt.Printf("Error Creating Jail Directory")
+		os.Exit(1)
 	}
-	
-	// fmt.Println(string(output))
+
+	defer os.RemoveAll(jail_dir)
 }

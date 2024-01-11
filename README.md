@@ -1,5 +1,3 @@
-[![progress-banner](https://backend.codecrafters.io/progress/docker/703a63a2-d32c-4e3c-bc20-56baa0ea2208)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
-
 This is a starting point for Go solutions to the
 ["Build Your Own Docker" Challenge](https://codecrafters.io/challenges/docker).
 

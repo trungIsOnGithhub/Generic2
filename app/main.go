@@ -12,14 +12,16 @@ import (
 
 type nullReader struct {}
 
-func runContainer(command string, args []string, sandboxPath string) {
+func runContainer(command string, args []string, sandbox_path string) {
 	cmd := exec.Command(command, args...)
+
+	cmd.Stdin = nullReader{}
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
 	err := cmd.Run()
-	err := syscall.Chroot(sandboxPath)
+	err := syscall.Chroot(sandbox_path)
 
 	if err != nil {
 		fmt.Printf("Unable to sandbox command")

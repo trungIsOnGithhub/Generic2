@@ -98,8 +98,28 @@ func run_container(command string, args []string, sandbox_path string) {
 	}
 }
 
+func get_image_name() (img_name string, tag string) {
+	full_name := os.Args[2]
+
+	name_tokens := strings.Split(full_name, ":")
+	tokens_len := len(name_tokens)
+
+	image_name, tag_name := name_tokens[0], "latest"
+
+	if len(name_tokens) == 2 {
+		return image_name, tag_name
+	}
+
+	image_name = strings.Join(name_tokens[0 : tokens_len-1])
+	tag_name = name_tokens[tokens_len-1]
+
+	return image_name, tag_name
+}
+
 // Usage: my_docker.sh run <image> <command> <arg1> <arg2> ...
 func main() {
+	image_name, image_tag := get_image_name();
+
 	command := os.Args[3]
 	args := os.Args[4:len(os.Args)]
 

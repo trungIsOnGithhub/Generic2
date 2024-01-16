@@ -26,8 +26,7 @@ func authenticate_image(image_name string) (*AuthResponse, error) {
 	) // format string with sprintf and escape
 
 	res, err := http.Get(
-		fmt.Sprintf("https://auth.docker.io/token?%s", auth_url_query)
-	)
+		fmt.Sprintf("https://auth.docker.io/token?%s", auth_url_query))
 	if err != nil { return nil, err }
 
 	var auth AuthResponse
@@ -38,7 +37,10 @@ func authenticate_image(image_name string) (*AuthResponse, error) {
 	return &auth, nil
 }
 
-func download_layers(image_name string, layers []ImageLayer, tmpDir string, auth *AuthResponse) ([]string, error) {
+func download_layers(image_name string, layers []ImageLayer, tmp_dir string, auth *AuthResponse) ([]string, error) {
+	if auth == nil {
+		return nil, fmt.Errorf("Authen info not found when download layer")
+	}
 
 	registry_address := "http://localhost:5000/v2/library/blobs/%s/%s"
 	url := fmt.Sprintf(registry_address, image_name, layer.Digest)
@@ -67,8 +69,22 @@ func download_layers(image_name string, layers []ImageLayer, tmpDir string, auth
 	return layer_files, nil
 }
 
-func download_image(image_name string, tag_name string
-						jailed_command_path string) error {
+func download_image(image_name string, tag_name string,
+				jailed_command_path string) error {
+	auth, err := authenticate(image)
+	if err != nil { return err }
+
 	layers_dir, err := os.MkdirTemp(".", "layers")
 	if err != nil { return err }
+	
+	defer os.RemoveAll(layers_dir)
+	
+	layers, err := download_layers(image_name, tag_name, layers_dir, auth)
+	if err != nil { return err }
+	
+	for _, layer := range layers {
+		// uncompressed
+		cmd := exec.Command("tar", "-xf", layerArchive, "-C", jailed_command_path)
+	}
+	return nil
 }

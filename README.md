@@ -87,6 +87,7 @@ sudo systemctl restart apache2
 ```
 
 - Further Virtual Host Configuration can be found on [apache.org](https://httpd.apache.org/docs/2.4/vhosts/examples.html)
+- About Wordpress site creating and hosting visit this repository [github.com](https://github.com/trungIsOnGithhub/WordpressSiteLab)
 
 ### References
 1. https://ubuntu.com/tutorials/install-and-configure-apache
